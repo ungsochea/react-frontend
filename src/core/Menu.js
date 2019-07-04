@@ -17,7 +17,20 @@ export const signout = (next) =>{
         return response.json()
     })
     .catch(err => console.log(err))
-}
+};
+
+export const isAuthenticated = () => {
+
+    if(typeof window == "undefined"){
+        return false
+    }
+
+    if(localStorage.getItem("jwt")){
+        return JSON.parse(localStorage.getItem("jwt"))
+    }else{
+        return false
+    }
+};
 
 const Menu = ({ history }) => (
     <div>
@@ -25,15 +38,29 @@ const Menu = ({ history }) => (
             <li className="nav-item">
                 <Link className="nav-link" style={isActive(history,"/")} to="/">Home</Link>
             </li>
-            <li className="nav-item">
-                <Link className="nav-link" style={isActive(history,"/signin")} to="/signin">Sign In</Link>
-            </li>
-            <li className="nav-item">
-                <Link className="nav-link" style={isActive(history,"/signup")} to="/signup">Sign Up</Link>
-            </li>
-            <li className="nav-item">
-                <a className="nav-link" style={(isActive(history,"/signout"),{cursor:"pointer",color:"#fff"})} onClick={()=>signout(()=>history.push('/'))}>Sign Out</a>
-            </li>
+            {!isAuthenticated() && (
+                <>
+                    <li className="nav-item">
+                        <Link className="nav-link" style={isActive(history,"/signin")} to="/signin">Sign In</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" style={isActive(history,"/signup")} to="/signup">Sign Up</Link>
+                    </li>
+                </>
+            )}
+
+            {isAuthenticated() && (
+                <>
+                    <li className="nav-item">
+                        <a className="nav-link" style={(isActive(history,"/signout"),{cursor:"pointer",color:"#fff"})} onClick={()=>signout(()=>history.push('/'))}>Sign Out</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" >{ isAuthenticated().user.name}</a>
+                    </li>
+                </>
+            )}
+            
+            
         </ul>
     </div>
 )

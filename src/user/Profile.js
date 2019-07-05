@@ -3,6 +3,7 @@ import { Redirect, Link } from 'react-router-dom'
 import { isAuthenticated } from '../auth/index'
 import { read } from '../user/apiUser'
 import DefaultProfile from '../images/user-avatar.jpg'
+import DeleteUser from '../user/DeleteUser'
 
 class Profile extends Component {
 
@@ -34,6 +35,11 @@ class Profile extends Component {
         this.init(userId)
     }
 
+    componentWillReceiveProps(props){
+        const userId = props.match.params.userId
+        this.init(userId)
+    }
+
     render() {
 
         const redirectToSignin = this.state.redirectToSignin
@@ -58,10 +64,10 @@ class Profile extends Component {
                                 user.create
                             ).toDateString()}`}</p>
                         </div>
-                            {isAuthenticated().user && isAuthenticated().user._id == user._id && (
+                            {isAuthenticated().user && isAuthenticated().user._id === user._id && (
                                 <div className="d-inline-block">
                                     <Link className="btn btn-raised btn-success mr-5" to={`user/edit/${user._id}`}>Edit Profile</Link>
-                                    <button className="btn btn-raised btn-danger">Delete Profile</button>
+                                   <DeleteUser userId={user._id}/>
                                 </div>
                             )}
                     </div>
